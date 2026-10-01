@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fi"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">OTP1_inclass_assignment_KalleToivonen</a> &gt; <a href="index.source.html" class="el_package">org.example</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package org.example;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.sql.SQLException;
+import java.util.List;
+
+<span class="nc" id="L15">public class Main extends Application {</span>
+
+<span class="nc" id="L17">    private final TemperatureConverter converter = new TemperatureConverter();</span>
+<span class="nc" id="L18">    private final TemperatureUnitDAO unitDAO = new TemperatureUnitDAO();</span>
+<span class="nc" id="L19">    private final TempRecordDAO recordDAO = new TempRecordDAO();</span>
+
+    private ComboBox&lt;TemperatureUnit&gt; fromUnitBox;
+    private ComboBox&lt;TemperatureUnit&gt; toUnitBox;
+    private TextField inputField;
+    private Label resultLabel;
+    private ListView&lt;String&gt; historyList;
+
+    @Override
+    public void start(Stage primaryStage) {
+<span class="nc" id="L29">        primaryStage.setTitle(&quot;Temperature Converter&quot;);</span>
+
+<span class="nc" id="L31">        Label inputLabel = new Label(&quot;Enter value:&quot;);</span>
+<span class="nc" id="L32">        inputField = new TextField();</span>
+
+<span class="nc" id="L34">        fromUnitBox = new ComboBox&lt;&gt;();</span>
+<span class="nc" id="L35">        toUnitBox = new ComboBox&lt;&gt;();</span>
+<span class="nc" id="L36">        loadUnits();</span>
+
+<span class="nc" id="L38">        Button convertButton = new Button(&quot;Convert&quot;);</span>
+<span class="nc" id="L39">        convertButton.setOnAction(e -&gt; handleConvert());</span>
+
+<span class="nc" id="L41">        resultLabel = new Label(&quot;Result: &quot;);</span>
+
+<span class="nc" id="L43">        historyList = new ListView&lt;&gt;();</span>
+<span class="nc" id="L44">        loadHistory();</span>
+
+<span class="nc" id="L46">        GridPane grid = new GridPane();</span>
+<span class="nc" id="L47">        grid.setHgap(10);</span>
+<span class="nc" id="L48">        grid.setVgap(10);</span>
+<span class="nc" id="L49">        grid.setPadding(new Insets(10));</span>
+
+<span class="nc" id="L51">        grid.add(inputLabel, 0, 0);</span>
+<span class="nc" id="L52">        grid.add(inputField, 1, 0);</span>
+<span class="nc" id="L53">        grid.add(new Label(&quot;From:&quot;), 0, 1);</span>
+<span class="nc" id="L54">        grid.add(fromUnitBox, 1, 1);</span>
+<span class="nc" id="L55">        grid.add(new Label(&quot;To:&quot;), 0, 2);</span>
+<span class="nc" id="L56">        grid.add(toUnitBox, 1, 2);</span>
+<span class="nc" id="L57">        grid.add(convertButton, 1, 3);</span>
+<span class="nc" id="L58">        grid.add(resultLabel, 1, 4);</span>
+
+<span class="nc" id="L60">        VBox root = new VBox(15);</span>
+<span class="nc" id="L61">        root.setPadding(new Insets(15));</span>
+<span class="nc" id="L62">        root.setAlignment(Pos.TOP_CENTER);</span>
+<span class="nc" id="L63">        root.getChildren().addAll(grid, new Label(&quot;History:&quot;), historyList);</span>
+
+<span class="nc" id="L65">        Scene scene = new Scene(root, 400, 500);</span>
+<span class="nc" id="L66">        primaryStage.setScene(scene);</span>
+<span class="nc" id="L67">        primaryStage.show();</span>
+<span class="nc" id="L68">    }</span>
+
+    private void loadUnits() {
+        try {
+<span class="nc" id="L72">            List&lt;TemperatureUnit&gt; units = unitDAO.getAllUnits();</span>
+<span class="nc" id="L73">            fromUnitBox.getItems().addAll(units);</span>
+<span class="nc" id="L74">            toUnitBox.getItems().addAll(units);</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            if (!units.isEmpty()) {</span>
+<span class="nc" id="L76">                fromUnitBox.getSelectionModel().select(0);</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">                toUnitBox.getSelectionModel().select(1 &lt; units.size() ? 1 : 0);</span>
+            }
+<span class="nc" id="L79">        } catch (SQLException e) {</span>
+<span class="nc" id="L80">            resultLabel.setText(&quot;DB error loading units: &quot; + e.getMessage());</span>
+<span class="nc" id="L81">        }</span>
+<span class="nc" id="L82">    }</span>
+
+    private void loadHistory() {
+        try {
+<span class="nc" id="L86">            List&lt;TempRecord&gt; records = recordDAO.getAllRecords();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">            for (TempRecord r : records) {</span>
+<span class="nc" id="L88">                historyList.getItems().add(</span>
+<span class="nc" id="L89">                        r.getInputValue() + &quot; -&gt; &quot; + r.getOutputValue()</span>
+                );
+<span class="nc" id="L91">            }</span>
+<span class="nc" id="L92">        } catch (SQLException e) {</span>
+<span class="nc" id="L93">            historyList.getItems().add(&quot;Error loading history: &quot; + e.getMessage());</span>
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">    }</span>
+
+    private void handleConvert() {
+        try {
+<span class="nc" id="L99">            double input = Double.parseDouble(inputField.getText());</span>
+<span class="nc" id="L100">            TemperatureUnit from = fromUnitBox.getValue();</span>
+<span class="nc" id="L101">            TemperatureUnit to = toUnitBox.getValue();</span>
+
+<span class="nc" id="L103">            double result = convert(input, from.getName(), to.getName());</span>
+<span class="nc" id="L104">            resultLabel.setText(&quot;Result: &quot; + result);</span>
+
+<span class="nc" id="L106">            TempRecord record = new TempRecord(input, from.getId(), result, to.getId());</span>
+<span class="nc" id="L107">            int newId = recordDAO.insertRecord(record);</span>
+
+<span class="nc" id="L109">            historyList.getItems().add(0, input + &quot; -&gt; &quot; + result);</span>
+
+<span class="nc" id="L111">        } catch (NumberFormatException ex) {</span>
+<span class="nc" id="L112">            resultLabel.setText(&quot;Please enter a valid number&quot;);</span>
+<span class="nc" id="L113">        } catch (SQLException ex) {</span>
+<span class="nc" id="L114">            resultLabel.setText(&quot;DB error: &quot; + ex.getMessage());</span>
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">    }</span>
+
+    private double convert(double value, String from, String to) {
+<span class="nc bnc" id="L119" title="All 2 branches missed.">        if (from.equals(to)) return value;</span>
+
+        double celsius;
+<span class="nc bnc" id="L122" title="All 4 branches missed.">        switch (from) {</span>
+<span class="nc" id="L123">            case &quot;Celsius&quot;: celsius = value; break;</span>
+<span class="nc" id="L124">            case &quot;Fahrenheit&quot;: celsius = converter.fahrenheitToCelsius(value); break;</span>
+<span class="nc" id="L125">            case &quot;Kelvin&quot;: celsius = converter.kelvinToCelsius(value); break;</span>
+<span class="nc" id="L126">            default: celsius = value;</span>
+        }
+
+<span class="nc bnc" id="L129" title="All 4 branches missed.">        switch (to) {</span>
+<span class="nc" id="L130">            case &quot;Celsius&quot;: return celsius;</span>
+<span class="nc" id="L131">            case &quot;Fahrenheit&quot;: return converter.celsiusToFahrenheit(celsius);</span>
+<span class="nc" id="L132">            case &quot;Kelvin&quot;: return celsius + 273.15;</span>
+<span class="nc" id="L133">            default: return celsius;</span>
+        }
+    }
+
+    public static void main(String[] args) {
+<span class="nc" id="L138">        launch(args);</span>
+<span class="nc" id="L139">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.13.202504020838</span></div></body></html>

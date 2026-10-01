@@ -1,2 +1,8 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+OTP1_inclass_assignment_KalleToivonen,org.example,Main,384,0,16,0,81,0,18,0,8,0
+OTP1_inclass_assignment_KalleToivonen,org.example,TemperatureUnitDAO,2,78,4,6,1,18,4,4,0,3
+OTP1_inclass_assignment_KalleToivonen,org.example,TempRecordDAO,2,101,4,6,1,27,4,4,0,3
+OTP1_inclass_assignment_KalleToivonen,org.example,DBConnection,3,5,0,0,1,1,1,1,1,1
+OTP1_inclass_assignment_KalleToivonen,org.example,TempRecord,3,45,0,0,1,17,1,6,1,6
+OTP1_inclass_assignment_KalleToivonen,org.example,TemperatureUnit,0,18,0,0,0,7,0,4,0,4
 OTP1_inclass_assignment_KalleToivonen,org.example,TemperatureConverter,0,35,0,4,0,5,0,7,0,5
